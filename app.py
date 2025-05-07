@@ -1,6 +1,14 @@
 from flask import Flask, render_template, request
-
+from model.conexao import Base
 app = Flask(__name__)
+
+from controller.UsuarioController import *
+
+if __name__ == '__main__':
+    Base.metadata.create_all(bind=engine)
+    app.run()
+
+
 
 # exemplo de uma rota devolvendo apenas um texto.
 @app.route('/', methods=['GET'])
@@ -17,9 +25,7 @@ def home():
 def hello_world_k():  # put application's code here
     #acessar o BD e salvar essa informação no BD
     #funcao do banck-end, receber os dados, tratar, fazer validações, pessitir os dados
-    # recuperar dados perssitidos.
+    # recuperar dados persistidos.
 
     return 'novo PWII: ' + request.form['nome'] + request.form['aniversario']
 
-if __name__ == '__main__':
-    app.run()
