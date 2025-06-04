@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, redirect, url_for
 
 from sqlalchemy.orm import sessionmaker
 
@@ -19,7 +19,9 @@ def usuarios():
 # exemplo de uma rota que devolve um pagina de um template.
 @app.route('/usuarios/novo', methods=['GET'])
 def novo():
-    return render_template("index.html")
+    db = Sessionlocal()
+    usuarios = db.query(Usuario).all();
+    return render_template("index.html", obj = usuarios)
 
 
 @app.route('/usuarios/salvar', methods=['POST'])
@@ -28,8 +30,9 @@ def create():
     usuario = Usuario(nome = request.form['nome'], data = request.form['aniversario'])
     db.add(usuario)
     db.commit()
-
-    return jsonify({'msg':'Salvo com sucesso'}), 200
+    msg = "Salvo com sucesso!"
+    return redirect(url_for('novo', msg = msg))
+    #return jsonify({'msg':'Salvo com sucesso'}), 200
 
 
 @app.route("/usuarios/<int:id>", methods = ["GET"])
@@ -41,16 +44,17 @@ def get_usuarios(id):
     else:
         return jsonify({'msg':'Usuário não encontrado'}), 404
 
-@app.route("/usuarios/<int:id>", methods = ["DELETE"])
+@app.route("/usuarios/delete/<int:id>", methods = ["GET"]) # antes não tinha delete e era DELETE
 def delete_usuarios(id):
     db = Sessionlocal()
     usuario = db.query(Usuario).get(id)
     if (usuario):
         db.delete(usuario)
         db.commit()
-        return jsonify({'msg':'Usuario apagado'}), 204
+        return redirect(url_for('novo', msg="Apagado com sucesso!"))
+        #return jsonify({'msg':'Usuario apagado'}), 204
     else:
-        return jsonify({'msg':'Usuário não encontrado'}), 404
+        return redirect(url_for('novo', msg="Dado não encontrado!"))
 
 
 @app.route("/usuarios", methods = ["POST"])

@@ -4,15 +4,39 @@
     <meta charset="UTF-8">
     <title>Aula de PW II</title>
 </head>
-<body bgcolor="#8a2be2">
+<body bgcolor="#8a2be2" style= "color: #ffffff">
 <form action="/usuarios/salvar" method="post">
     Nome:
     <input type="text" name="nome"/>
 
-    Aniversario
+    Aniversário
     <input type="date" name="aniversario"/>
 
     <input type="submit" value="salvar">
+
+    <div class = "tabela">
+        <table>
+            <tread>
+                <tr>
+                    <th>Nome</th>
+                    <th>Aniversário</th>
+                    <th>Editar</th>
+                    <th>Excluir</th>
+                </tr>
+            </tread>
+            <tbody>
+            {% for usuario in obj %}
+                <tr>
+                    <td> {{usuario.nome}} </td>
+                    <td> {{usuario.data}} </td>
+                    <td> <a href="#">Editar</a> </td>
+                    <td> <a href="{{url_for('delete_usuarios', id=usuario.id)}}">Excluir</a> </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </form>
 </body>
 </html>
